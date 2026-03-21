@@ -1,0 +1,136 @@
+# 内阁都察制 · OpenClaw 配置示例
+# Imperial Cabinet & Censorate — OpenClaw Configuration Template
+#
+# 使用方法：
+#   1. 将本文件拷贝到 ~/.openclaw/openclaw.yaml
+#   2. 根据本地路径和模型配置进行修改
+#   3. ⚠️ 不要提交任何真实 API 密钥到版本控制
+
+workspace: "~/.openclaw/workspace"
+
+# ============================================================
+# Agent 注册表
+# 共 11 个 Agent：御前首辅 + 八部 + 一厂 + 御史台
+# ============================================================
+
+agents:
+  # 御前首辅 — 唯一入口，多 Agent 路由中枢
+  main:
+    path: "~/.openclaw/agents/main"
+    persona_source:
+      - "USER.md"
+      - "SOUL.md"
+      - "AGENTS.md"
+      - "MEMORY.md"
+    router_enabled: true
+    description: "Grand Secretary — sole interface to the Emperor, multi-agent orchestrator"
+
+  # 内阁 — 总体协调与路线规划
+  cabinet:
+    path: "~/.openclaw/agents/cabinet"
+    persona_source: ["AGENTS.md"]
+    description: "Cabinet — strategic planning and task decomposition"
+
+  # 工部 — 技术选型与系统架构
+  engineering:
+    path: "~/.openclaw/agents/engineering"
+    persona_source: ["AGENTS.md"]
+    description: "Engineering — tech stack, scripts, automation"
+
+  # 户部 — 成本与 ROI 分析
+  finance:
+    path: "~/.openclaw/agents/finance"
+    persona_source: ["AGENTS.md"]
+    description: "Finance — cost tracking, ROI analysis"
+
+  # 兵部 — 安全策略与应急预案
+  security:
+    path: "~/.openclaw/agents/security"
+    persona_source: ["AGENTS.md"]
+    description: "Security — policies, key protection, incident response"
+
+  # 吏部 — 流程规范与运营节奏
+  ops:
+    path: "~/.openclaw/agents/ops"
+    persona_source: ["AGENTS.md"]
+    description: "Operations — SOPs, workflow design, daily rhythm"
+
+  # 礼部 — 对外文案与知识整理
+  content:
+    path: "~/.openclaw/agents/content"
+    persona_source: ["AGENTS.md"]
+    description: "Content — copywriting, knowledge organization"
+
+  # 刑部 — 合规红线检查
+  compliance:
+    path: "~/.openclaw/agents/compliance"
+    persona_source: ["AGENTS.md"]
+    description: "Compliance — privacy, copyright, policy checks"
+
+  # 翰林院 — 技术文档与教程
+  docs:
+    path: "~/.openclaw/agents/docs"
+    persona_source: ["AGENTS.md"]
+    description: "Documentation — README, tutorials, retrospectives"
+
+  # 东厂 — 监控与审计
+  monitor:
+    path: "~/.openclaw/agents/monitor"
+    persona_source: ["AGENTS.md"]
+    description: "Eastern Depot — monitoring, audit, metrics"
+
+  # 御史台 — 审核与封驳
+  censor:
+    path: "~/.openclaw/agents/censor"
+    persona_source: ["AGENTS.md"]
+    description: "Censorate — quality review, approval/rejection gate"
+
+# ============================================================
+# 全局策略
+# ============================================================
+
+global_policies:
+  skill_priority: true              # Skill 优先：已有 Skill 能完成的任务必须优先使用
+  script_check_before_write: true   # 写脚本前先检查是否有类似 Skill
+  translation_standard: "complete_chinese"  # 翻译必须是完整中文译文
+  output_format: "structured"       # 输出结构化（标题、列表、表格）
+  default_language: "zh-CN"         # 默认简体中文
+
+# ============================================================
+# 路由规则
+# 皇帝 → 御前首辅 → 对应衙门
+# ============================================================
+
+routing_rules:
+  emperor_to_grand_secretary: "皇帝指令 → 御前首辅"
+  grand_secretary_to_departments: "任务类型 → 对应衙门"
+  review_gate: "高风险任务 → 御史台审核 → 通过则执行 / 封驳则打回"
+  cross_department_workflow: "内阁负责拆解，御前首辅负责协同形成闭环"
+
+# ============================================================
+# 监控配置
+# ============================================================
+
+monitoring:
+  audit_agent: "monitor"        # 东厂负责审计
+  review_agent: "censor"        # 御史台负责审核
+  metrics_to_track:
+    - skill_usage_frequency
+    - resource_consumption
+    - process_bottlenecks
+    - knowledge_base_updates
+    - task_state_machine_compliance
+    - permission_violations
+  review_frequency: "daily"
+
+# ============================================================
+# 模型配置（示例，请替换为你的实际配置）
+# ============================================================
+
+# models:
+#   default: "openrouter/xiaomi/mimo-v2-pro"
+#   image: "openrouter/xiaomi/mimo-v2-omni"
+#
+# providers:
+#   openrouter:
+#     api_key: "${OPENROUTER_API_KEY}"   # 使用环境变量，不要硬编码
