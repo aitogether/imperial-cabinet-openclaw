@@ -1,4 +1,6 @@
 # 🐲 内阁都察制 · 一人公司多 Agent 治理框架
+适合对象：已经在用 OpenClaw 的个人开发者 / 小团队，有意把日常工作流交给多 Agent 接手。
+不适合：完全没接触过 OpenClaw、希望一键 SaaS 化的人。
 当前状态：实验性 Alpha，接口可能会变动
 > **Imperial Cabinet & Censorate System for Solo-Entrepreneurs**
 > A multi-agent orchestration framework based on OpenClaw, using traditional Chinese bureaucratic metaphors for task governance.
@@ -71,7 +73,7 @@ openclaw gateway start
 
 ## 致敬与差异说明
 
-本项目在设计理念上深受 [Edict](https://github.com/cft0808/edict)启发。Edict 是 Anthropic 推出的多 Agent 治理框架，同样使用中国传统官制隐喻，包含了门下省审核、军机处看板等优秀设计。
+本项目在设计理念上深受 [Edict](https://github.com/cft0808/edict)启发。Edict 是社区里的一个三省六部制多 Agent 框架，实现了门下省审核和军机处看板等机制。
 
 **我们明确致敬 Edict，但两者定位不同：**
 
