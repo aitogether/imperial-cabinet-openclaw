@@ -1,5 +1,5 @@
 # 🐲 内阁都察制 · 一人公司多 Agent 治理框架
-
+当前状态：实验性 Alpha，接口可能会变动
 > **Imperial Cabinet & Censorate System for Solo-Entrepreneurs**
 > A multi-agent orchestration framework based on OpenClaw, using traditional Chinese bureaucratic metaphors for task governance.
 
