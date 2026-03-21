@@ -53,7 +53,7 @@
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/yourname/imperial-cabinet-openclaw.git
+git clone https://github.com/aitogether/imperial-cabinet-openclaw.git
 cd imperial-cabinet-openclaw
 
 # 2. 拷贝配置模板（根据本地路径和模型修改）
