@@ -71,8 +71,7 @@ openclaw gateway start
 
 ## 致敬与差异说明
 
-本项目在设计理念上深受 [Edict](https://github.com/cft0808/edict)
-启发。Edict 是 Anthropic 推出的多 Agent 治理框架，同样使用中国传统官制隐喻，包含了门下省审核、军机处看板等优秀设计。
+本项目在设计理念上深受 [Edict](https://github.com/cft0808/edict)启发。Edict 是 Anthropic 推出的多 Agent 治理框架，同样使用中国传统官制隐喻，包含了门下省审核、军机处看板等优秀设计。
 
 **我们明确致敬 Edict，但两者定位不同：**
 
@@ -126,6 +125,6 @@ openclaw gateway start
 ## 参考资料
 
 - [OpenClaw 官方文档](https://docs.openclaw.ai)
-- [Edict（by Anthropic）](https://github.com/anthropics/edict) — 我们的设计启发来源
+- [Edict](https://github.com/cft0808/edict) 我们的设计启发来源
 - [OpenClaw 社区](https://discord.com/invite/clawd)
 # imperial-cabinet-openclaw
