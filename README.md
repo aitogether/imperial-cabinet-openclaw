@@ -2,6 +2,9 @@
 适合对象：已经在用 OpenClaw 的个人开发者 / 小团队，有意把日常工作流交给多 Agent 接手。
 不适合：完全没接触过 OpenClaw、希望一键 SaaS 化的人。
 当前状态：**v2 Alpha** — 七阶段流水线 + 11 个 Skill 体系已就绪，接口趋于稳定
+
+> 📸 **截图 & Demo**：由于本项目是纯配置型框架（Markdown 文件定义工作流），暂无独立截图。快速上手请参考下方 [最小可运行示例](#最小可运行示例) 和 [examples/](examples/) 目录中的实际工作流示例。
+
 > **Imperial Cabinet & Censorate System for Solo-Entrepreneurs**
 > A multi-agent orchestration framework based on OpenClaw, using traditional Chinese bureaucratic metaphors for task governance.
 
@@ -39,6 +42,49 @@
 - Document-first: all personas, rules, and workflows defined in Markdown
 - Progressive strictness: start with conventions, evolve toward state machines and dashboards
 - Modular: use all 11 agents or trim down to 3–4 as needed
+
+---
+
+## 适用场景 & 示例工作流
+
+本框架专为「一个人就是一家公司」的场景设计，以下是几个典型的使用案例：
+
+- **📰 内容生产流水线**：御前首辅拆解选题 → 礼部写初稿 → 御史台审查 → 工部排版发布。从选题到发布，全程只需一次「批示」。
+- **🛠️ 简单 SaaS 运维**：东厂定时巡检 → 兵部安全审计 → 吏部触发部署。日常运维告警自动响应，异常才通知你。
+- **📚 个人知识库整理**：翰林院定期整理笔记 → 内阁归档分类 → 礼部输出摘要。碎片信息自动沉淀为结构化知识。
+
+更多示例 → [examples/](examples/) 目录
+
+---
+
+## 最小可运行示例
+
+从零到跑通 demo，3 分钟搞定：
+
+```bash
+# 1. 确保已安装 OpenClaw
+openclaw --version  # 需要 v1.0+
+
+# 2. 克隆本仓库
+git clone https://github.com/aitogether/imperial-cabinet-openclaw.git
+cd imperial-cabinet-openclaw
+
+# 3. 初始化工作区（自动创建 ~/.openclaw/workspace 下的必要文件）
+bash scripts/init-workspace.sh
+
+# 4. 拷贝配置模板并填入你的模型 API Key
+cp config/openclaw.example.yaml ~/.openclaw/openclaw.yaml
+# 用编辑器打开 openclaw.yaml，填入 OpenRouter / OpenAI 等 API 密钥
+
+# 5. 启动 OpenClaw 网关
+openclaw gateway start
+
+# 6. 在飞书/微信/Telegram 中发送任意任务，御前首辅将自动拆解并调度
+```
+
+> 💡 最小配置只需 3 个 Agent：御前首辅 + 工部 + 翰林院。完整八部一厂可根据需要逐步启用。
+
+详细文档 → [docs/getting-started.md](docs/getting-started.md)
 
 ---
 
