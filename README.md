@@ -108,12 +108,20 @@ openclaw gateway start
 │   ├── architecture.md        # 架构详解
 │   ├── getting-started.md     # 三步上手
 │   ├── governance.md          # 治理规则（状态机 + 权限矩阵）
+│   ├── data-flow.md           # 数据流架构（LCM/Memory/Workspace）
+│   ├── dashboard.md           # 仪表盘集成说明
+│   ├── scripts-reference.md   # 运维脚本说明
+│   ├── contributing.md        # 贡献指南
+│   ├── changelog.md           # 变更日志
 │   └── faq.md                 # 常见问题
 ├── examples/
 │   ├── solo-content-pipeline.md   # 一人公司内容流水线示例
 │   └── automation-income-flow.md  # 自动化收入流示例
 └── scripts/
-    └── init-workspace.sh      # 工作区初始化脚本
+    ├── init-workspace.sh      # 工作区初始化脚本
+    ├── cost-tracker.sh        # 户部成本统计
+    ├── healthcheck.sh         # 东厂健康巡检
+    └── retrospective.sh       # 东厂复盘官
 ```
 
 ---
