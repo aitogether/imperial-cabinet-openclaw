@@ -1,7 +1,7 @@
 # 🐲 内阁都察制 · 一人公司多 Agent 治理框架
 适合对象：已经在用 OpenClaw 的个人开发者 / 小团队，有意把日常工作流交给多 Agent 接手。
 不适合：完全没接触过 OpenClaw、希望一键 SaaS 化的人。
-当前状态：实验性 Alpha，接口可能会变动
+当前状态：**v2 Alpha** — 七阶段流水线 + 11 个 Skill 体系已就绪，接口趋于稳定
 > **Imperial Cabinet & Censorate System for Solo-Entrepreneurs**
 > A multi-agent orchestration framework based on OpenClaw, using traditional Chinese bureaucratic metaphors for task governance.
 
