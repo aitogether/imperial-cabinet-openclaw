@@ -1,5 +1,33 @@
 # 变更日志 · Changelog
 
+## v2.1.0 (2026-03-31)
+
+### 新增
+
+- **`/审` 审查并行编排 Skill**（`skills-reference/review-parallel/SKILL.md`）
+  - 四路并行：审码/审安/审设/codex 同时执行，提速 3 倍
+  - 设计理念来自华罗庚《统筹方法》：互不依赖的工序应并行执行
+  - 汇总裁决：交叉验证 + 盲区识别 + 终审裁决
+
+### 改进
+
+- 审查阶段从串行 4 步重构为并行 1 步（`/审` 编排入口）
+- AGENTS.example.md 路由规则更新，状态机描述同步
+- MEMORY.example.md 升级为 v2.1，Skill 清单 11→12
+- README.md 更新版本号、Skill 数量、文件树
+
+### 文件变更
+
+| 文件 | 操作 |
+|------|------|
+| `skills-reference/review-parallel/SKILL.md` | 新增 |
+| `workspace-templates/AGENTS.example.md` | 更新（阶段 4 并行化） |
+| `workspace-templates/MEMORY.example.md` | 更新（v2.1 + 12 Skills） |
+| `README.md` | 更新（版本号 + Skill 数量） |
+| `docs/changelog.md` | 本条 |
+
+---
+
 ## v2.0.0-alpha (2026-03-29)
 
 ### 新增

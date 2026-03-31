@@ -1,7 +1,7 @@
 # 🐲 内阁都察制 · 一人公司多 Agent 治理框架
 适合对象：已经在用 OpenClaw 的个人开发者 / 小团队，有意把日常工作流交给多 Agent 接手。
 不适合：完全没接触过 OpenClaw、希望一键 SaaS 化的人。
-当前状态：**v2 Alpha** — 七阶段流水线 + 11 个 Skill 体系已就绪，接口趋于稳定
+当前状态：**v2.1** — 七阶段流水线 + 12 个 Skill 体系已就绪，审查四路并行，接口趋于稳定
 > **Imperial Cabinet & Censorate System for Solo-Entrepreneurs**
 > A multi-agent orchestration framework based on OpenClaw, using traditional Chinese bureaucratic metaphors for task governance.
 
@@ -26,7 +26,7 @@
 | 🎯 零额外依赖 | 纯 OpenClaw 原生，不需要 Docker、Web 后端或前端 |
 | 📋 文档驱动 | 用 Markdown 文件定义人设、规则和流程，开箱即用 |
 | 🔄 渐进式严格 | 先用约定，再逐步程序化为严格状态机和看板 |
-| 🏗️ 可逐步裁剪 | 11 个 Agent 可以按需裁剪，最小只需御前首辅 + 2~3 个部 |
+| 🏗️ 可逐步裁剪 | 12 个 Skill 可以按需裁剪，最小只需御前首辅 + 2~3 个部 |
 
 ---
 
@@ -38,7 +38,7 @@
 - Zero extra backend dependencies (pure OpenClaw native)
 - Document-first: all personas, rules, and workflows defined in Markdown
 - Progressive strictness: start with conventions, evolve toward state machines and dashboards
-- Modular: use all 11 agents or trim down to 3–4 as needed
+- Modular: use all 12 skills or trim down to 3–4 as needed
 
 ---
 
@@ -117,6 +117,19 @@ openclaw gateway start
 ├── examples/
 │   ├── solo-content-pipeline.md   # 一人公司内容流水线示例
 │   └── automation-income-flow.md  # 自动化收入流示例
+├── skills-reference/              # 全部 12 个 Skill 参考文件
+│   ├── review-parallel/           # /审 — 审查并行编排（v2.1 新增）
+│   ├── 问诊/
+│   ├── 审码/
+│   ├── 审安/
+│   ├── 审设/
+│   ├── 调查/
+│   ├── codex/
+│   ├── 质检/
+│   ├── 性能/
+│   ├── 发布/
+│   ├── 部署/
+│   └── 复盘/
 └── scripts/
     ├── init-workspace.sh      # 工作区初始化脚本
     ├── cost-tracker.sh        # 户部成本统计
