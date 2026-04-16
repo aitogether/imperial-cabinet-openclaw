@@ -1,171 +1,215 @@
-# 架构详解 · 内阁都察制 v2
-「适合的使用者」：一人公司 / 小团队 / 熟悉 OpenClaw 的开发者
+# 🏛️ OpenClaw 架构文档
 
-## 核心理念
+本文档描述 OpenClaw（内阁都察制）的内部结构与工作流映射。
 
-内阁都察制采用中国传统官制隐喻来组织多 Agent 协作。核心原则是：
+---
 
-> **人类只做决策，AI 负责执行。一个入口进来，一个声音出去。**
+## 1. Agent 角色与职责
 
-## 组织架构
+OpenClaw 采用「内阁都察制」治理模型，每个 Agent 对应一个官僚角色：
 
-```
-                    ┌─────────────┐
-                    │   皇帝/用户  │
-                    │  (唯一决策者) │
-                    └──────┬──────┘
-                           │ 只对御前首辅下旨
-                    ┌──────▼──────┐
-                    │  御前首辅    │
-                    │ (调度中枢)   │
-                    └──────┬──────┘
-                           │ 按任务阶段路由 Skill
-           ┌───────────────┼───────────────┐
-           │               │               │
-    ┌──────▼──────┐ ┌──────▼──────┐ ┌──────▼──────┐
-    │    内阁     │ │   御史台    │ │    东厂     │
-    │  (拆解规划) │ │ (审核封驳)  │ │ (监控审计)  │
-    └──────┬──────┘ └──────┬──────┘ └─────────────┘
-           │               │
-           │ 审核通过后     │
-    ┌──────▼──────┐        │
-    │   八部执行   │ ◄──────┘
-    └─────────────┘
-```
+| 角色 | 职责 | 输出产物 |
+|------|------|----------|
+| **御前内阁 (Emperor)** | 顶层决策者，接收任务并分派给六部 | Task spec |
+| **内阁大学士 (Chancellor)** | 总协调人，监督各阶段进度 | Phase status |
+| **吏部尚书 (Minister of Personnel)** | 人员配置与权限管理 | Role assignment |
+| **工部尚书 (Minister of Works)** | 执行具体任务（编码、写作、调研） | Artifacts (code, doc) |
+| **都察院 (Censorate)** | 质量审查与合规检查 | Review report |
+| **通政司 (Communication)** | 对外交互（GitHub、邮件、Slack） | PR / Notification |
 
-## 角色定义
+### 技能（Skill）映射
 
-### 皇帝（用户）
+每个角色绑定一个或多个 Skill：
+- `research` → 吏部 / 都察院（信息收集与验证）
+- `write` → 工部（内容生成）
+- `code` → 工部（代码实现）
+- `review` → 都察院（合规审查）
+- `publish` → 通政司（发布）
 
-唯一的真人决策者。只做「批示」与「拍板」，不亲自写命令和代码。所有指令通过御前首辅传达。
+---
 
-### 御前首辅（Grand Secretary）
+## 2. 工作流阶段（Workflow Phases）
 
-- **技术代号**: `main` / `grand_secretary`
-- **职责**: 用户唯一接口，多 Agent 调度中枢
-- **不做**: 不长期亲自承担具体业务
-- **要做**: 统筹、拆解、规划、路由、监督、汇报
-- **铁律**: 不亲自干活 — 调研派探马子代理，代码派工部子代理
-
-### 八部
-
-| 部门 | 代号 | 职责一句话 | 对应 Skill |
-|------|------|-----------|-----------|
-| 内阁 | cabinet | 总体协调与路线规划 | `/问诊` |
-| 工部 | engineering | 技术选型与系统架构 | coding-agent |
-| 户部 | finance | 算力与 API 成本统计 | — |
-| 兵部 | security | 安全策略与权限设计 | `/审安` |
-| 吏部 | ops | 流程与协作规范 | `/发布` `/部署` |
-| 礼部 | content | 对外文案与知识整理 | — |
-| 刑部 | compliance | 隐私 / 版权 / 政策红线检查 | — |
-| 翰林院 | docs | 技术文档与教程 | — |
-
-### 一厂：东厂（monitor）
-
-监控与审计。记录关键操作、采集指标、异常检测、维护记忆总账、定期复盘。
-
-对应 Skill：`/质检`、`/性能`、`/复盘`
-
-### 御史台（censor）
-
-审核与封驳。审核各部关键产出质量，可封驳打回重做，维护整体质量与风险底线。
-
-对应 Skill：`/审码`、`/审设`、`/调查`、`/codex`
-
-## 七阶段流水线
+一个完整的 OpenClaw 流程分为 **立案 → 调研 → 起草 → 复核 → 定稿** 五个阶段：
 
 ```
-问诊 → 规划 → 构建 → 审查 → 质检 → 发布 → 复盘
+┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐
+│   立案   │──▶│   调研   │──▶│   起草   │──▶│   复核   │──▶│   定稿   │
+│  Issue  │   │ Research│   │  Draft  │   │ Review  │   │  Done   │
+└─────────┘   └─────────┘   └─────────┘   └─────────┘   └─────────┘
+      │             │             │             │             │
+      ▼             ▼             ▼             ▼             ▼
+   Emperor     Chancellor     Minister     Censorate     Emperor
+   (决策)       (协调)        (执行)       (审查)        (验收)
 ```
 
-| 阶段 | 主导 | Skill | 产出 | 状态 |
-|------|------|-------|------|------|
-| 1. 问诊 | 内阁 | `/问诊` | 设计文档 | 待拆解 → 已拆解 |
-| 2. 规划 | 工部 | — | 技术方案 | 已拆解 |
-| 3. 构建 | 工部 | coding-agent | 代码 | 构建中 |
-| 4. 审查 | 御史台+兵部 | `/审码` `/审安` `/审设` `/调查` `/codex` | 审查报告 | 审核中 → 已批准/封驳 |
-| 5. 质检 | 东厂 | `/质检` `/性能` | 测试报告 | 执行中 |
-| 6. 发布 | 吏部 | `/发布` `/部署` | PR/Changelog | 执行中 → 待验收 |
-| 7. 复盘 | 东厂 | `/复盘` | 复盘报告 | 待验收 → 已完成 |
+### 阶段说明
 
-### 审查阶段详解
+1. **立案（Case Filing）**
+   - 输入：GitHub Issue / 用户需求描述
+   - 输出：结构化任务卡（Task Card）
+   - 负责：Emperor（御前内阁）
+   - 产出：`task.yaml`
 
-审查是内阁都察制的核心防线，采用**多维度交叉审查**：
+2. **调研（Research）**
+   - 输入：Task Card
+   - 输出：背景资料 + 可行性报告（`brief.md`）
+   - 负责：Chancellor（内阁大学士）协调，吏部执行调研
+   - 产出：`research/` 目录
 
-| 维度 | Skill | 审什么 |
-|------|-------|--------|
-| 代码质量 | `/审码` | 可读性、结构、命名、错误处理、性能、测试覆盖 |
-| 安全风险 | `/审安` | OWASP Top 10 + STRIDE 威胁建模 |
-| 设计一致 | `/审设` | UI/UX 一致性、AI Slop 检测 |
-| 根因分析 | `/调查` | 5 步法追溯，铁律：无调查不修 |
-| 交叉验证 | `/codex` | 第二模型独立审查，发现盲区 |
+3. **起草（Drafting）**
+   - 输入：Task Card + brief.md
+   - 输出：代码补丁 / 文档草稿（`patch.diff` / `draft.md`）
+   - 负责：工部尚书（Minister of Works）
+   - 产出：`draft/` 目录
 
-## 任务流转示意
+4. **复核（Review）**
+   - 输入：Draft artifacts
+   - 输出：审查意见 + 通过/驳回决定（`review.json`）
+   - 负责：都御史（Censorate Lead）
+   - 产出：`reviews/` 目录
+
+5. **定稿（Finalization）**
+   - 输入：Approved draft
+   - 输出：PR / Release / Report（最终交付物）
+   - 负责：Emperor + 通政司
+   - 产出：GitHub PR / Email / Slack 通知
+
+---
+
+## 3. 配置映射（Configuration → Flow）
+
+OpenClaw 的流程由 YAML 配置文件驱动，每个阶段映射到具体的 Skill：
+
+```yaml
+flow:
+  name: standard-pipeline
+  stages:
+   立案:
+     agent: emperor
+     skill: plan
+     input: issue.body
+     output: task.yaml
+
+   调研:
+     agent: chancellor
+     skill: research
+     input: task.yaml
+     output: brief.md
+
+   起草:
+     agent: minister
+     skill: write
+     input: brief.md
+     output: patch.diff
+
+   复核:
+     agent: censor
+     skill: review
+     input: patch.diff
+     output: review.json
+
+   定稿:
+     agent: emperor
+     skill: publish
+     input: review.approved ? patch.diff : null
+     output: github-pr
+```
+
+### 关键配置项
+
+- `agent`：指定哪个角色负责该阶段（对应 Agent 身份）
+- `skill`：绑定哪个 Skill（决定能力边界）
+- `input` / `output`：上下游文件依赖
+- `condition`：条件分支（例如只有 review.approved 才进入定稿）
+
+---
+
+## 4. 数据流与存储
 
 ```
-1. 皇帝下旨
-   "我想做一个自动化内容发布流水线"
-        │
-2. 御前首辅接收，调用 /问诊 澄清约束
-   "您的目标是日更？每周？需要哪些平台？"
-        │
-3. 内阁拆解任务
-   拆成：选题模块、资料收集、写稿、审核、发布、复盘
-   输出：里程碑计划 + 验收标准
-        │
-4. 工部构建
-   通过 coding-agent 子代理实现代码
-        │
-5. 御史台审查（/审码 → /审安 → /审设 → /codex）
-   多维度交叉审查
-   → 通过：批准执行
-   → 封驳：打回工部重新实现
-        │
-6. 东厂质检（/质检 → /性能）
-   浏览器自动化测试、性能基线
-        │
-7. 吏部发布（/发布 → /部署）
-   版本管理、PR、Changelog、部署验证
-        │
-8. 东厂复盘（/复盘）
-   产出统计、问题清单、趋势分析
-        │
-9. 御前首辅汇总，回报皇帝
-   "结论：流水线已搭建完成。
-    证据：脚本路径 / 测试报告 / PR 链接。
-    下一步：是否需要接入更多平台？"
+┌─────────────┐
+│   GitHub    │ ← Webhook 触发
+│   Issue     │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌──────────┐    ┌──────────┐
+│  Emperor    │───▶│ Chancellor│───▶│ Minister │
+│  (Plan)     │    │(Research) │    │ (Write)  │
+└──────┬──────┘    └────┬─────┘    └────┬─────┘
+       │               │               │
+       ▼               ▼               ▼
+   task.yaml      brief.md      patch.diff
+                               │
+                               ▼
+                        ┌────────────┐
+                        │ Censorate  │
+                        │ (Review)   │
+                        └──────┬─────┘
+                               │
+                               ▼
+                          review.json
+                               │
+                               ▼
+                        ┌────────────┐
+                        │ Emperor    │
+                        │ (Publish)  │
+                        └────────────┘
+                               │
+                               ▼
+                           GitHub PR
 ```
 
-## 关键设计决策
+所有中间产物（`task.yaml`, `brief.md`, `patch.diff`, `review.json`）均存储在仓库的 `.openclaw/` 目录下，便于追溯与审计。
 
-### 为什么用「约定」而非「强制」？
+---
 
-本框架采用 **渐进式严格** 策略：
+## 5. 扩展与自定义
 
-- **初期**: 用 Markdown 文件定义规则和约定，依赖御前首辅自觉执行
-- **中期**: 东厂定期审计，检查约定是否被遵守
-- **后期**: 逐步引入程序化状态机和看板
+### 添加新 Agent 角色
 
-好处：
-1. 零额外依赖，不需要部署后端
-2. 可以快速启动，不需要先写一堆代码
-3. 根据实际需要逐步加强约束
+在 `agents/` 目录下新增 `my-agent.py`，继承 `BaseAgent` 并实现 `run()` 方法：
 
-### 为什么审查用多维度交叉？
+```python
+from openclaw import BaseAgent
 
-单一审查者有盲区。5 个 Skill 从不同维度审视同一份代码：
+class MyAgent(BaseAgent):
+    def run(self, input_data):
+        # 自定义处理逻辑
+        return {"output": "processed"}
+```
 
-- `/审码` 看工程质量
-- `/审安` 看安全漏洞
-- `/审设` 看设计一致性
-- `/调查` 看根因链路
-- `/codex` 用独立模型交叉验证
+然后在 `flow.yml` 中引用：
 
-就像古代朝廷的多部门制衡，不让任何一个部门独揽大权。
+```yaml
+stages:
+  custom:
+    agent: my-agent
+    skill: custom
+```
 
-### 为什么御前首辅不亲自干活？
+### 自定义 Skill
 
-分工原则：
-- 首辅的强项是**统筹和判断**，不是执行细节
-- 让首辅亲自写代码 = 浪费调度能力 + 容易忽略全局视角
-- 子代理在指定范围内可自治，首辅负责全局协调和向用户汇报
+Skill 是 Agent 的能力单元，在 `skills/` 目录下定义：
+
+```python
+from openclaw import Skill
+
+class MySkill(Skill):
+    def execute(self, context):
+        # 业务逻辑
+        return result
+```
+
+---
+
+## 6. 监控与运维
+
+- **日志**：所有 Agent 运行日志写入 `.openclaw/logs/`
+- **指标**：Prometheus 格式指标暴露在 `/metrics` 端点
+- **告警**：都察院审查失败时自动发送 Slack 通知
+
+---
+
+如有疑问，请参考 [README.md](README.md) 或提交 [Issue](https://github.com/aitogether/imperial-cabinet-openclaw/issues)。
