@@ -1,0 +1,54 @@
+{
+  "name": "discourse-css-optimizer",
+  "version": "1.0.0",
+  "description": "Discourse CSS Optimization Toolkit - cssnano + PurgeCSS + Rollup.js integrated pipeline",
+  "main": "src/index.js",
+  "bin": {
+    "discourse-css-optimizer": "./cli.js"
+  },
+  "files": [
+    "src/",
+    "cli.js",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "jest --verbose",
+    "test:coverage": "jest --coverage",
+    "prepublishOnly": "npm test",
+    "optimize": "node cli.js optimize",
+    "analyze": "node cli.js analyze",
+    "build": "node cli.js build",
+    "watch": "node cli.js watch"
+  },
+  "keywords": [
+    "discourse",
+    "css",
+    "optimization",
+    "purgecss",
+    "cssnano",
+    "minification",
+    "rollup"
+  ],
+  "author": "zhimingIU",
+  "license": "MIT",
+  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhimingIU/imperial-cabinet-openclaw.git"
+  },
+  "dependencies": {
+    "cssnano": "^7.0.6",
+    "postcss": "^8.5.3",
+    "purgecss": "^7.0.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "rollup": "^4.40.1",
+    "rollup-plugin-postcss": "^4.0.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true,
+    "collectCoverageFrom": ["src/**/*.js"]
+  }
+}
